@@ -24,12 +24,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         executeCall()
-        print(hashParam)
     }
     
     func executeCall() {
         let endpoint = GetNameEndpoint()
-        let completion: EndpointClient.ObjectEndpointCompletion<String> = { result, response in
+        let completion: EndpointClient.ObjectEndpointCompletion<Employees> = { result, response in
             guard let responseUnwrapped = response else { return }
 
             print("\n\n response = \(responseUnwrapped.allHeaderFields) ;\n \(responseUnwrapped.statusCode) \n")
@@ -48,10 +47,11 @@ class ViewController: UIViewController {
 
 }
 
-final class GetNameEndpoint: ObjectResponseEndpoint<String> {
+final class GetNameEndpoint: ObjectResponseEndpoint<Employees> {
     
     override var method: RESTClient.RequestType { return .get }
-    override var path: String { "/v1/public/characters/1010743/series" }
+    //override var path: String { "/v1/public/characters/1010743/series" }
+    override var path: String { "/example.json" }
     override var ts: String { "?ts=1645689698425" }
     override var publicKey: String { "&apikey=938b87d66cedff099f79d7b772d3a1f9" }
     override var hash: String { "&hash=bd6a437af10eddd2f19982c3cbe31ae7" }
