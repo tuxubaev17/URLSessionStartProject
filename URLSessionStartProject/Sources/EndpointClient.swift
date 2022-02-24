@@ -28,7 +28,7 @@ public final class EndpointClient {
     // MARK: - Private Properties
 
     private let applicationSettings: ApplicationSettingsService
-    private var masterServerURL: String { "https://api.magicthegathering.io" }
+    private var masterServerURL: String { "https://gateway.marvel.com" }
 //    private var masterServerURL: String { "http://localhost:5055" }
 
     // MARK: - Initialization
@@ -41,7 +41,11 @@ public final class EndpointClient {
 
     public func executeRequest<Object: Decodable>(_ endpoint: ObjectResponseEndpoint<Object>,
                                            completion: @escaping ObjectEndpointCompletion<Object>) {
-        guard let requestURL = makeRequestUrl(path: endpoint.path, queryItems: endpoint.queryItems) else {
+        guard let requestURL = makeRequestUrl(path: endpoint.path,
+                                              ts: endpoint.ts,
+                                              publicKey: endpoint.publicKey,
+                                              hash: endpoint.hash,
+                                              queryItems: endpoint.queryItems) else {
             completion(.failure(EndpointClientError.wrongURL), nil)
             return
         }
@@ -70,7 +74,11 @@ public final class EndpointClient {
     }
 
     public func executeRequest(_ endpoint: EmptyResponseEndpoint, completion: @escaping SuccessEndpointCompletion) {
-        guard let requestURL = makeRequestUrl(path: endpoint.path, queryItems: endpoint.queryItems) else {
+        guard let requestURL = makeRequestUrl(path: endpoint.path,
+                                              ts: endpoint.ts,
+                                              publicKey: endpoint.publicKey,
+                                              hash: endpoint.hash,
+                                              queryItems: endpoint.queryItems) else {
             completion(.failure(EndpointClientError.wrongURL))
             return
         }
@@ -99,15 +107,16 @@ public final class EndpointClient {
 
     // MARK: - Private
 
-    private func makeRequestUrl(path: String, queryItems: [URLQueryItem]?) -> URL? {
+    private func makeRequestUrl(path: String, ts: String, publicKey: String, hash: String, queryItems: [URLQueryItem]?) -> URL? {
         guard let baseURL = URL(string: masterServerURL) else {
             return nil
         }
         let requestURL: URL
         if path.isEmpty {
             requestURL = baseURL
+         
         } else {
-            requestURL = baseURL.appendingPathComponent(path)
+            requestURL = URL(string: "\(baseURL)\(path)\(ts)\(publicKey)\(hash)")!
         }
         if let queryItems = queryItems {
             var urlComponents = URLComponents(string: requestURL.absoluteString) // "https://api.magicthegathering.io/v1/cards?name=Black%20Lotus"
@@ -120,7 +129,7 @@ public final class EndpointClient {
         
         return requestURL
     }
-
+    
     private func makeUrlSessionWithTimeout(_ timeout: TimeInterval) -> URLSession {
         let configuration = URLSessionConfiguration.default
         configuration.allowsCellularAccess = true // Разрешать доступ с мобильной связи
