@@ -204,7 +204,7 @@ public final class EndpointClient {
         do {
             let cards = try decoder.decode(Cards.self, from: data)
             print(cards.printData())
-            return cards as! D
+            return try decoder.decode(D.self, from: data)
         } catch {
             throw error
         }
