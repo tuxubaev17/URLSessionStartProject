@@ -8,60 +8,45 @@
 import Foundation
 import FileProvider
 
-struct Cards: Codable {
+struct Cards: Decodable {
     let cards: [Card]
+    
+    func printData() {
+        cards.forEach { card in
+            print("Имя карты: \(card.name)")
+            print("Тип: \(card.type)")
+            print("Мановая стоимость: \(card.manaCost)")
+            print("Название сета: \(card.set)")
+            print("Редкость: \(card.rarity)")
+        }
+    }
 }
 
-struct Card: Codable {
-    let name, manaCost: String
-    let cmc: Int
+struct Card: Decodable {
+    let name: String
     let type: String
-    let types: [String]
+    let manaCost: String
+    let set: String
     let rarity: String
-    let cardSet: Set
-    let setName, text, artist, number: String
-    let layout: String
-    let multiverseid: String?
-    let imageURL: String?
-    let printings: [Set]
-    let originalText, originalType: String?
-    let legalities: [LegalityElement]
+
     
     enum CodingKeys: String, CodingKey {
-        case name, manaCost, cmc, type, types, rarity
-        case cardSet = "set"
-        case setName, text, artist, number, layout, multiverseid
-        case imageURL = "imageUrl"
-        case printings, originalText, originalType, legalities
+        case name
+        case manaCost
+        case type
+        case types
+        case rarity
+        case set = "setName"
     }
     
-    enum Set: String, Codable {
-        case ced = "CED"
-        case cei = "CEI"
-        case lea = "LEA"
-        case leb = "LEB"
-        case ovnt = "OVNT"
-        case prm = "PRM"
-        case the2Ed = "2ED"
-        case vma = "VMA"
-    }
-
-    struct LegalityElement: Codable {
-        let format: Format
-        let legality: LegalityEnum
-    }
-
-    enum Format: String, Codable {
-        case commander = "Commander"
-        case duel = "Duel"
-        case legacy = "Legacy"
-        case oldschool = "Oldschool"
-        case vintage = "Vintage"
-    }
-
-    enum LegalityEnum: String, Codable {
-        case banned = "Banned"
-        case restricted = "Restricted"
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        name = try container.decode(String.self, forKey: CodingKeys.name)
+        type = try container.decode(String.self, forKey: CodingKeys.types)
+        manaCost = try container.decode(String.self, forKey: CodingKeys.manaCost)
+        set = try container.decode(String.self, forKey: CodingKeys.set)
+        rarity = try container.decode(String.self, forKey: CodingKeys.rarity)
     }
 }
 

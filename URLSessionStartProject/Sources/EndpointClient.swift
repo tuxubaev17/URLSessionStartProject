@@ -202,8 +202,9 @@ public final class EndpointClient {
     {
         guard let data = data else { throw EndpointClientError.noParsingData }
         do {
-            print("data = \(String(describing: (String(data: data, encoding: .utf8))))")
-            return try decoder.decode(D.self, from: data)
+            let cards = try decoder.decode(Cards.self, from: data)
+            print(cards.printData())
+            return cards as! D
         } catch {
             throw error
         }
@@ -218,6 +219,7 @@ extension JSONDecoder {
     
     class func webApiDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .webApiCustomDateDecodingStrategy
         
         return decoder
