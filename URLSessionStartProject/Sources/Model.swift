@@ -26,16 +26,13 @@ struct Card: Codable {
     let printings: [Set]
     let originalText, originalType: String?
     let legalities: [LegalityElement]
-    let id: String
-    let flavor: String?
-    let variations: [String]?
     
     enum CodingKeys: String, CodingKey {
         case name, manaCost, cmc, type, types, rarity
         case cardSet = "set"
         case setName, text, artist, number, layout, multiverseid
         case imageURL = "imageUrl"
-        case printings, originalText, originalType, legalities, id, flavor, variations
+        case printings, originalText, originalType, legalities
     }
     
     enum Set: String, Codable {
