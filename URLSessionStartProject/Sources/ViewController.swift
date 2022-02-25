@@ -24,7 +24,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         executeCall()
-        print(hashParam)
     }
     
     func executeCall() {
@@ -51,17 +50,14 @@ class ViewController: UIViewController {
 final class GetNameEndpoint: ObjectResponseEndpoint<String> {
     
     override var method: RESTClient.RequestType { return .get }
-    override var path: String { "/v1/public/characters/1010743/series" }
-    override var ts: String { "?ts=1645689698425" }
-    override var publicKey: String { "&apikey=938b87d66cedff099f79d7b772d3a1f9" }
-    override var hash: String { "&hash=bd6a437af10eddd2f19982c3cbe31ae7" }
+    override var path: String { "/v1/cards" }
     
 //    override var queryItems: [URLQueryItem(name: "id", value: "1")]?
     
     override init() {
         super.init()
 
-//        queryItems = [URLQueryItem(name: "name", value: "Black Lotus")]
+        queryItems = [URLQueryItem(name: "name", value: "Black Lotus")]
     }
     
 }

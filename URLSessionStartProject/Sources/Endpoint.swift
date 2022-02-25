@@ -13,9 +13,6 @@ public class Endpoint {
     
     public var method: RESTClient.RequestType { fatalError() }
     public var path: String { fatalError() }
-    public var ts: String { fatalError() }
-    public var publicKey: String { fatalError() }
-    public var hash: String { fatalError() }    
     
     public var httpHeaders: [String: String] {
         switch method {
